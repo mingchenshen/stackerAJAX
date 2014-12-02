@@ -55,7 +55,9 @@ var showAnswerer = function(answerer){
 	var ID = result.find('.id');
 	ID.text(answerer.user.user_id);
 	var rep = result.find('.reputation');
-	rep.text(answerer.user.)
+	rep.text(answerer.user.reputation);
+	var pfpic = result.find('.pfpic');
+	pfpic.append('<img src=' + answerer.user.profile_image + '>');
 	return result;
 }
 
@@ -124,7 +126,6 @@ var getInspiration = function(topic){
 		$('.search-results').html(searchResults);
 
 		$.each(result.items, function(i, item){
-			console.log('here');
 			var answerer = showAnswerer(item);
 			$('.results').append(answerer);
 		});
