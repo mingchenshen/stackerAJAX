@@ -6,6 +6,12 @@ $(document).ready( function() {
 		var tags = $(this).find("input[name='tags']").val();
 		getUnanswered(tags);
 	});
+	$('.inspiration-getter').submit( function(event){
+		$('.results').html('');
+		var topic = $(this).find("input[name='answerers']").val();
+		console.log(typeof(topic));
+		getInspiration(topic);
+	});
 });
 
 // this function takes the question object returned by StackOverflow 
@@ -41,6 +47,17 @@ var showQuestion = function(question) {
 	return result;
 };
 
+var showAnswerer = function(answerer){
+	var result = $('.templates .answerer').clone();
+
+	var name = result.find('.display-name');
+	name.append('<a target="_blank" href=http://stackoverflow.com/users/' + answerer.user.user_id + '>' + answerer.user.display_name + '</a>');
+	var ID = result.find('.id');
+	ID.text(answerer.user.user_id);
+	var rep = result.find('.reputation');
+	rep.text(answerer.user.)
+	return result;
+}
 
 // this function takes the results object from StackOverflow
 // and creates info about search results to be appended to DOM
@@ -74,7 +91,7 @@ var getUnanswered = function(tags) {
 		})
 	.done(function(result){
 		var searchResults = showSearchResults(request.tagged, result.items.length);
-
+		console.log(result);
 		$('.search-results').html(searchResults);
 
 		$.each(result.items, function(i, item) {
@@ -88,5 +105,34 @@ var getUnanswered = function(tags) {
 	});
 };
 
+var getInspiration = function(topic){
+	var mystring = topic;
+	var request = {tag: topic,
+							site: 'stackoverflow',
+							order: 'desc',
+							sort: 'votes'};
+	var result = $.ajax({
+		url: "http://api.stackexchange.com/2.2/tags/"+request.tag+"/top-answerers/month",
+		data: request,
+		dataType: "jsonp",
+		type: "GET",
+		})
+	.done(function(result){
+		console.log(result);
+		var searchResults = showSearchResults(request.tag);
+
+		$('.search-results').html(searchResults);
+
+		$.each(result.items, function(i, item){
+			console.log('here');
+			var answerer = showAnswerer(item);
+			$('.results').append(answerer);
+		});
+	})
+	.fail(function(result){
+		console.log("it failed")
+	});
+
+}
 
 
